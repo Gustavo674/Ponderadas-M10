@@ -1,14 +1,15 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import LoginScreen from '../../../src/screens/LoginScreen';
-import RegisterScreen from '../../../src/screens/RegisterScreen';
-import ResetPasswordScreen from '../../../src/screens/ResetPasswordScreen';
-import HomeScreen from '../../../src/screens/HomeScreen';
-import ProductDetailScreen from '../../../src/screens/ProductDetailScreen';
-import CameraScreen from '../../../src/screens/CameraScreen';
-import ProfileScreen from '../../../src/screens/ProfileScreen';
-import NotificationsScreen from '../../../src/screens/NotificationsScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ProductDetailScreen from '../screens/ProductDetailScreen';
+import CameraScreen from '../screens/CameraScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
