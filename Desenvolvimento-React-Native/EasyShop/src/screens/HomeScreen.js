@@ -1,65 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, ActivityIndicator } from 'react-native';
-import axios from 'axios';
+// src/screens/HomeScreen.js
 
-export default function HomeScreen({ navigation }) {
+import React, { useState, useEffect } from 'react';
+import { View, FlatList, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+
+export default function HomeScreen() {
+  const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  const loadProducts = async () => {
+  const LIMIT = 20;
+
+  const fetchProducts = async (pageNumber = 1, refreshing = false) => {
+    if (loading) return;
     setLoading(true);
+
     try {
-      const response = await axios.get(`http://10.0.2.2:3000/products?_limit=20&_page=${page}`);
-      setProducts(prev => [...prev, ...response.data]);
+      const response = await axios.get(`http://10.128.0.215:3000/products?_page=${pageNumber}&_limit=${LIMIT}`);
+      const newProducts = response.data;
+
+      setProducts(prevProducts =>
+        refreshing ? newProducts : [...prevProducts, ...newProducts]
+      );
+
+      setHasMore(newProducts.length === LIMIT);
+      setPage(pageNumber + 1);
     } catch (error) {
-      console.error(error);
+      console.error('Erro ao buscar produtos:', error);
+    } finally {
+      setLoading(false);
+      if (refreshing) setRefreshing(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    loadProducts();
-  }, [page]);
+    fetchProducts();
+  }, []);
 
   const handleLoadMore = () => {
-    setPage(prev => prev + 1);
+    if (hasMore && !loading) {
+      fetchProducts(page);
+    }
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setPage(1);
+    fetchProducts(1, true);
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate('ProductDetail', { product: item })}
+    >
       <Text style={styles.name}>{item.name}</Text>
-      <Text>R$ {item.price}</Text>
-      <Button
-        title="Detalhes"
-        onPress={() => navigation.navigate('ProductDetail', { product: item })}
-      />
-    </View>
+      <Text style={styles.price}>R$ {item.price}</Text>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Produtos</Text>
       <FlatList
         data={products}
-        renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={styles.list}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={loading && <ActivityIndicator size="large" color="#0000ff" />}
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
+        ListFooterComponent={loading && <ActivityIndicator size="large" color="#6200ee" />}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
-  title: { fontSize: 24, textAlign: 'center', marginVertical: 10 },
-  item: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5
+  container: { flex: 1, backgroundColor: '#f9f9f9' },
+  list: { padding: 10 },
+  card: {
+    backgroundColor: '#fff',
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 8,
+    elevation: 2,
   },
-  name: { fontSize: 18, fontWeight: 'bold' }
+  name: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
+  price: { fontSize: 16, color: 'green' },
 });

@@ -1,56 +1,82 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+// src/screens/LoginScreen.js
 
-export default function LoginScreen({ navigation }) {
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { TextInput, Button, Title } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+
+export default function LoginScreen() {
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setSenha] = useState('');
 
   const handleLogin = () => {
-    // Simula login (em um projeto real faria requisição)
-    if (email && password) {
-      navigation.replace('MainTabs');
-    } else {
-      alert('Preencha e-mail e senha!');
-    }
+    // Aqui você colocaria sua lógica de autenticação (mock ou real)
+    navigation.navigate('MainTabs');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>EasyShop - Login</Text>
+      <Title style={styles.title}>EasyShop - Login</Title>
+
       <TextInput
-        placeholder="Email"
+        label="Email"
         value={email}
         onChangeText={setEmail}
+        mode="outlined"
         style={styles.input}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
+
       <TextInput
-        placeholder="Senha"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
+        label="Senha"
+        value={senha}
+        onChangeText={setSenha}
+        mode="outlined"
         style={styles.input}
+        secureTextEntry
       />
-      <Button title="Entrar" onPress={handleLogin} />
-      <Button
-        title="Cadastre-se"
-        onPress={() => navigation.navigate('Register')}
-      />
-      <Button
-        title="Esqueci minha senha"
-        onPress={() => navigation.navigate('ResetPassword')}
-      />
+
+      <Button mode="contained" onPress={handleLogin} style={styles.button}>
+        Entrar
+      </Button>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.link}>Cadastre-se</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
+        <Text style={styles.link}>Esqueci minha senha</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  title: { fontSize: 24, marginBottom: 20, textAlign: 'center' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#f9f9f9',
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: 24,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5
-  }
+    marginBottom: 16,
+  },
+  button: {
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  link: {
+    textAlign: 'center',
+    color: '#6200ee',
+    marginTop: 8,
+    fontSize: 16,
+  },
 });

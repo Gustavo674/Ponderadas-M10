@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+// src/screens/RegisterScreen.js
 
-export default function RegisterScreen({ navigation }) {
+import React, { useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { TextInput, Button, Title } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+
+export default function RegisterScreen() {
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setSenha] = useState('');
 
   const handleRegister = () => {
-    if (email && password) {
-      alert('Usuário registrado com sucesso!');
-      navigation.navigate('Login');
+    // Lógica de cadastro (mock ou real)
+    if (email && senha) {
+      alert('Usuário cadastrado com sucesso!');
+      navigation.goBack();
     } else {
       alert('Preencha e-mail e senha!');
     }
@@ -16,33 +22,62 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Cadastro</Text>
+      <Title style={styles.title}>Cadastro</Title>
+
       <TextInput
-        placeholder="Email"
+        label="Email"
         value={email}
         onChangeText={setEmail}
+        mode="outlined"
         style={styles.input}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
+
       <TextInput
-        placeholder="Senha"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
+        label="Senha"
+        value={senha}
+        onChangeText={setSenha}
+        mode="outlined"
         style={styles.input}
+        secureTextEntry
       />
-      <Button title="Registrar" onPress={handleRegister} />
+
+      <Button mode="contained" onPress={handleRegister} style={styles.button}>
+        Registrar
+      </Button>
+
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={styles.link}>Voltar para Login</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  title: { fontSize: 24, marginBottom: 20, textAlign: 'center' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#f9f9f9',
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: 24,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5
-  }
+    marginBottom: 16,
+  },
+  button: {
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  link: {
+    textAlign: 'center',
+    color: '#6200ee',
+    marginTop: 8,
+    fontSize: 16,
+  },
 });
