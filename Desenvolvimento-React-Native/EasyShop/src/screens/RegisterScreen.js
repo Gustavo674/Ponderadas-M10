@@ -10,8 +10,17 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleRegister = () => {
-    // Lógica de cadastro (mock ou real)
+    if (!isValidEmail(email)) {
+      alert('Por favor, insira um email válido!');
+      return;
+    }
+
     if (email && senha) {
       alert('Usuário cadastrado com sucesso!');
       navigation.goBack();

@@ -10,7 +10,17 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = () => {
+    if (!isValidEmail(email)) {
+      alert('Por favor, insira um email válido!');
+      return;
+    }
+
     // Aqui você colocaria sua lógica de autenticação (mock ou real)
     navigation.navigate('MainTabs');
   };

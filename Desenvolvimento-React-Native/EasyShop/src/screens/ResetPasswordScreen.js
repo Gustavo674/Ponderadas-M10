@@ -9,14 +9,45 @@ export default function ResetPasswordScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [generatedOtp, setGeneratedOtp] = useState('');
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSendOtp = () => {
+    if (!isValidEmail(email)) {
+      alert('Por favor, insira um email válido!');
+      return;
+    }
+
+    // Gerar OTP no front (exemplo: 6 dígitos)
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOtp(otpCode);
+    setOtpSent(true);
+
+    // Mostrar OTP em um alert (para teste)
+    alert(`Seu código OTP é: ${otpCode}`);
+  };
 
   const handleResetPassword = () => {
-    // Lógica de reset (mock ou real)
-    if (email && otp) {
+    if (!isValidEmail(email)) {
+      alert('Por favor, insira um email válido!');
+      return;
+    }
+
+    if (otp.trim() === '') {
+      alert('Por favor, insira o código OTP!');
+      return;
+    }
+
+    if (otp === generatedOtp) {
       alert('Senha resetada com sucesso!');
       navigation.goBack();
     } else {
-      alert('Preencha e-mail e código OTP!');
+      alert('Código OTP incorreto.');
     }
   };
 
@@ -34,21 +65,33 @@ export default function ResetPasswordScreen() {
         autoCapitalize="none"
       />
 
-      <TextInput
-        label="Código OTP"
-        value={otp}
-        onChangeText={setOtp}
-        mode="outlined"
-        style={styles.input}
-      />
-
       <Button
         mode="contained"
-        onPress={handleResetPassword}
+        onPress={handleSendOtp}
         style={styles.button}
       >
-        Resetar Senha
+        Enviar código OTP
       </Button>
+
+      {otpSent && (
+        <>
+          <TextInput
+            label="Código OTP"
+            value={otp}
+            onChangeText={setOtp}
+            mode="outlined"
+            style={styles.input}
+          />
+
+          <Button
+            mode="contained"
+            onPress={handleResetPassword}
+            style={styles.button}
+          >
+            Resetar Senha
+          </Button>
+        </>
+      )}
 
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.link}>Voltar para Login</Text>
