@@ -15,12 +15,12 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/poker_table_bg.png')} // você deve colocar uma imagem como "feltro de mesa de poker"
+      source={require('../assets/poker_table_bg.png')} 
       style={styles.background}
       resizeMode="cover"
     >
       <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-        <Text style={styles.title}>♠️ CardCrafter ♠️</Text>
+        <Text style={styles.title}> CardCrafter </Text>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Game')}>
           <Text style={styles.buttonText}>🎮 Começar Jogo</Text>
