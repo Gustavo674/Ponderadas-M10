@@ -59,7 +59,6 @@ export default function GameScreen({ navigation }) {
     const randomMod = modifiersList[Math.floor(Math.random() * modifiersList.length)];
     setCurrentModifier(randomMod);
 
-    // Se tiver bonusReroll, +1 reroll, senão normal
     setRerollsLeft(BASE_REROLLS + (modifiers.bonusReroll ? 1 : 0));
   };
 
@@ -83,42 +82,31 @@ export default function GameScreen({ navigation }) {
     cards.forEach(card => {
       let cardValue = 0;
 
-      // Ace
       if (card.rank === 'A') {
         cardValue = modifiers.bonusAce20 ? 20 : 10;
-      }
-      // Face cards
-      else if (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J') {
+      } else if (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J') {
         cardValue = modifiers.faceCardsBoost ? 10 : 5;
-      }
-      // Low cards 2-5
-      else if (['2', '3', '4', '5'].includes(card.rank)) {
+      } else if (['2', '3', '4', '5'].includes(card.rank)) {
         cardValue = modifiers.bonusLowCards ? 10 : parseInt(card.rank);
-      }
-      // Normal cards
-      else {
+      } else {
         cardValue = parseInt(card.rank);
       }
 
       total += cardValue;
 
-      // Mod: +20 por ♠️
       if (modifiers.bonusSpades && card.suit === '♠️') {
         total += 20;
       }
 
-      // Mod: +5 por carta vermelha
       if (modifiers.bonusRedCards && (card.suit === '♥️' || card.suit === '♦️')) {
         total += 5;
       }
     });
 
-    // Mod: +10 fixo
     if (modifiers.bonusFlat10) {
       total += 10;
     }
 
-    // Mod: +50%
     if (modifiers.bonusMultiplier) {
       total = Math.floor(total * 1.5);
     }
@@ -145,10 +133,11 @@ export default function GameScreen({ navigation }) {
         ]
       );
     } else {
-      Alert.alert(
-        "Pontuação insuficiente",
-        `Você fez ${calculatedScore} pts. Precisa de ${targetScore} pts.\n\nTente novamente!`
-      );
+      // Ir para Game Over
+      navigation.navigate('GameOver', {
+        round: currentRound,
+        coins: coins,
+      });
     }
   };
 
@@ -161,7 +150,6 @@ export default function GameScreen({ navigation }) {
     if (currentModifier) {
       setModifiers(prev => ({ ...prev, [currentModifier.key]: true }));
 
-      // Se for bonusReroll, dá +1 reroll imediatamente
       if (currentModifier.key === 'bonusReroll') {
         setRerollsLeft(prev => prev + 1);
       }

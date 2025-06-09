@@ -7,6 +7,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import GameScreen from './src/screens/GameScreen';
 import ShopScreen from './src/screens/ShopScreen';
 import TutorialScreen from './src/screens/TutorialScreen';
+import GameOverScreen from './src/screens/GameOverScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ export default function App() {
         <Stack.Screen name="Game" component={GameScreen} />
         <Stack.Screen name="Shop" component={ShopScreen} />
         <Stack.Screen name="Tutorial" component={TutorialScreen} />
+        <Stack.Screen name="GameOver" component={GameOverScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
