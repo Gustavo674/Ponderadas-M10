@@ -7,6 +7,8 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>CardCrafter</Text>
       <Button title="Começar Jogo" onPress={() => navigation.navigate('Game')} />
+      <View style={{ height: 20 }} />
+      <Button title="Tutorial" onPress={() => navigation.navigate('Tutorial')} />
     </View>
   );
 }
