@@ -1,20 +1,37 @@
+// src/screens/ProfileScreen.js
+
+// Importa React e hooks
 import React, { useState, useEffect } from 'react';
+
+// Importa componentes básicos do React Native
 import { View, ScrollView, StyleSheet, Image, Alert } from 'react-native';
+
+// Importa componentes visuais do React Native Paper
 import { TextInput, Button, Card, Title, Snackbar, Avatar } from 'react-native-paper';
+
+// Importa AsyncStorage para armazenar / recuperar dados localmente
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Componente principal da tela de Perfil
 export default function ProfileScreen() {
+
+  // Estados para campos do perfil
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [profilePhoto, setProfilePhoto] = useState(null); // base64 or uri
+  const [profilePhoto, setProfilePhoto] = useState(null);  // foto (base64 ou uri)
 
+  // Estados para lista de produtos criados e favoritos
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
+  // Estado para Snackbar
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
+  // useEffect → carrega dados do perfil, produtos e favoritos ao abrir a tela
   useEffect(() => {
+
+    // Função para carregar dados do perfil
     const loadProfile = async () => {
       const storedName = await AsyncStorage.getItem('profile-name');
       const storedEmail = await AsyncStorage.getItem('profile-email');
@@ -27,25 +44,30 @@ export default function ProfileScreen() {
       if (storedPhoto) setProfilePhoto(storedPhoto);
     };
 
+    // Função para carregar produtos criados
     const loadProducts = async () => {
       const storedProducts = await AsyncStorage.getItem('products');
       const products = storedProducts ? JSON.parse(storedProducts) : [];
       setProducts(products);
     };
 
+    // Função para carregar produtos favoritados
     const loadFavorites = async () => {
       const keys = await AsyncStorage.getAllKeys();
-      const favKeys = keys.filter(key => key.startsWith('fav-'));
+      const favKeys = keys.filter(key => key.startsWith('fav-'));  // filtra apenas chaves de favoritos
       const favItems = await AsyncStorage.multiGet(favKeys);
       const favorites = favItems.map(([key, value]) => JSON.parse(value));
       setFavorites(favorites);
     };
 
+    // Chama as funções de carregamento
     loadProfile();
     loadProducts();
     loadFavorites();
+
   }, []);
 
+  // Função para salvar o perfil
   const saveProfile = async () => {
     await AsyncStorage.setItem('profile-name', name);
     await AsyncStorage.setItem('profile-email', email);
@@ -56,6 +78,7 @@ export default function ProfileScreen() {
     setSnackbarVisible(true);
   };
 
+  // Função para alterar a senha (simulada com Alert.prompt)
   const changePassword = async () => {
     Alert.prompt('Alterar Senha', 'Digite a nova senha:', async (newPassword) => {
       if (newPassword) {
@@ -65,11 +88,16 @@ export default function ProfileScreen() {
     });
   };
 
+  // JSX da tela
   return (
     <ScrollView contentContainerStyle={styles.container}>
+
+      {/* Card de perfil */}
       <Card style={styles.card}>
         <Card.Title title="Meu Perfil" />
         <Card.Content>
+
+          {/* Avatar */}
           <View style={styles.avatarContainer}>
             {profilePhoto ? (
               <Avatar.Image size={100} source={{ uri: profilePhoto }} />
@@ -79,7 +107,7 @@ export default function ProfileScreen() {
             <Button
               mode="outlined"
               onPress={() => {
-                // Exemplo simples: usar uma imagem placeholder para teste
+                // Exemplo simples: usa imagem placeholder
                 setProfilePhoto('https://placekitten.com/200/200');
               }}
               style={styles.avatarButton}
@@ -88,6 +116,7 @@ export default function ProfileScreen() {
             </Button>
           </View>
 
+          {/* Campos de perfil */}
           <TextInput
             label="Nome"
             value={name}
@@ -107,15 +136,19 @@ export default function ProfileScreen() {
             keyboardType="phone-pad"
             style={styles.input}
           />
+
+          {/* Botões de ação */}
           <Button mode="contained" onPress={saveProfile} style={styles.button}>
             Salvar
           </Button>
           <Button mode="outlined" onPress={changePassword} style={styles.button}>
             Alterar Senha
           </Button>
+
         </Card.Content>
       </Card>
 
+      {/* Card com produtos criados */}
       <Card style={styles.card}>
         <Card.Title title="Produtos Criados" />
         <Card.Content>
@@ -137,6 +170,7 @@ export default function ProfileScreen() {
         </Card.Content>
       </Card>
 
+      {/* Card com produtos favoritos */}
       <Card style={styles.card}>
         <Card.Title title="Favoritos" />
         <Card.Content>
@@ -158,6 +192,7 @@ export default function ProfileScreen() {
         </Card.Content>
       </Card>
 
+      {/* Snackbar de confirmação */}
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
@@ -165,18 +200,39 @@ export default function ProfileScreen() {
       >
         Perfil salvo com sucesso!
       </Snackbar>
+
     </ScrollView>
   );
 }
 
+// Estilos da tela
 const styles = StyleSheet.create({
   container: { padding: 16 },
+
   card: { marginBottom: 16 },
+
   input: { marginBottom: 12 },
+
   button: { marginTop: 8 },
-  avatarContainer: { alignItems: 'center', marginBottom: 16 },
-  avatarButton: { marginTop: 8 },
-  productCard: { marginBottom: 12 },
-  productImage: { height: 200 },
-  productText: { marginTop: 8 },
+
+  avatarContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+
+  avatarButton: {
+    marginTop: 8,
+  },
+
+  productCard: {
+    marginBottom: 12,
+  },
+
+  productImage: {
+    height: 200,
+  },
+
+  productText: {
+    marginTop: 8,
+  },
 });
