@@ -1,27 +1,39 @@
 // src/screens/TutorialScreen.js
+
+// Importa React e hooks
 import React, { useEffect, useRef } from 'react';
+// Importa componentes básicos
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Animated, ImageBackground } from 'react-native';
 
+// Componente da tela de Tutorial
 export default function TutorialScreen({ navigation }) {
+  
+  // Animação de fade-in (opacidade)
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  // Efeito de animação quando a tela carrega
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 800,
+      duration: 800, // duração da animação
       useNativeDriver: true,
     }).start();
   }, []);
 
+  // Renderização da tela
   return (
+    // Fundo com imagem da mesa de poker
     <ImageBackground
       source={require('../assets/poker_table_bg.png')}
       style={styles.background}
       resizeMode="cover"
     >
+      {/* Conteúdo com fade-in */}
       <Animated.ScrollView contentContainerStyle={[styles.container, { opacity: fadeAnim }]}>
+        {/* Título */}
         <Text style={styles.title}>🃏 Como Jogar CardCrafter 🃏</Text>
 
+        {/* Instruções do jogo */}
         <Text style={styles.text}>
           🎴 Seu objetivo é montar combinações de cartas para alcançar a pontuação alvo de cada rodada.
         </Text>
@@ -50,6 +62,7 @@ export default function TutorialScreen({ navigation }) {
           Tente chegar o mais longe que conseguir! 🚀
         </Text>
 
+        {/* Botão para voltar */}
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>🔙 Voltar</Text>
         </TouchableOpacity>
@@ -57,53 +70,3 @@ export default function TutorialScreen({ navigation }) {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // overlay para contraste
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 25,
-    textAlign: 'center',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 8,
-  },
-  text: {
-    fontSize: 18,
-    color: '#fff',
-    marginBottom: 15,
-    textAlign: 'left',
-    width: '100%',
-    lineHeight: 24,
-  },
-  button: {
-    backgroundColor: '#8B0000',
-    paddingVertical: 15,
-    paddingHorizontal: 50,
-    borderRadius: 15,
-    marginTop: 30,
-    borderWidth: 3,
-    borderColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});

@@ -1,10 +1,17 @@
 // src/screens/GameScreen.js
+
+// Importa React e hooks necessários
 import React, { useEffect, useState } from 'react';
+// Importa componentes básicos do React Native
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert, ImageBackground, ScrollView } from 'react-native';
+// Importa o componente de carta visual
 import Card from '../components/Card';
+// Importa o componente de pontuação
 import Score from '../components/Score';
+// Importa função para buscar cartas da "API"
 import { getCards } from '../services/api';
 
+// Lista de possíveis modificadores que o jogo pode aplicar
 const modifiersList = [
   { id: 1, name: "+50% pontos totais", key: 'bonusMultiplier' },
   { id: 2, name: "+20 por ♠️", key: 'bonusSpades' },
@@ -16,9 +23,16 @@ const modifiersList = [
   { id: 8, name: "+1 reroll extra", key: 'bonusReroll' },
 ];
 
+// Componente principal da tela de jogo
 export default function GameScreen({ navigation }) {
+
+  // Estado da mão atual de cartas
   const [cards, setCards] = useState([]);
+  
+  // Estado da pontuação atual
   const [score, setScore] = useState(0);
+  
+  // Estado dos modificadores ativos
   const [modifiers, setModifiers] = useState({
     bonusMultiplier: false,
     bonusSpades: false,
@@ -29,21 +43,33 @@ export default function GameScreen({ navigation }) {
     bonusAce20: false,
     bonusReroll: false,
   });
+
+  // Modificador aleatório atual da rodada
   const [currentModifier, setCurrentModifier] = useState(null);
+
+  // Pontuação alvo para passar de rodada
   const [targetScore, setTargetScore] = useState(50);
+
+  // Número da rodada atual
   const [currentRound, setCurrentRound] = useState(1);
 
+  // Quantidade de rerolls restantes
   const BASE_REROLLS = 3;
   const [rerollsLeft, setRerollsLeft] = useState(BASE_REROLLS);
 
+  // Moedas acumuladas
   const [coins, setCoins] = useState(0);
+
+  // Lista de modificadores comprados na loja
   const [ownedModifiers, setOwnedModifiers] = useState([]);
 
+  // Função para buscar nova mão de cartas e resetar modificadores
   const fetchNewHand = async () => {
     const fetchedCards = await getCards();
     setCards(fetchedCards);
     setScore(0);
 
+    // Reseta modificadores da rodada
     setModifiers(prev => ({
       bonusMultiplier: false,
       bonusSpades: false,
@@ -55,16 +81,20 @@ export default function GameScreen({ navigation }) {
       bonusReroll: false,
     }));
 
+    // Sorteia um modificador aleatório para a rodada
     const randomMod = modifiersList[Math.floor(Math.random() * modifiersList.length)];
     setCurrentModifier(randomMod);
 
+    // Configura rerolls da rodada
     setRerollsLeft(BASE_REROLLS + (modifiers.bonusReroll ? 1 : 0));
   };
 
+  // Executa fetchNewHand uma vez no início
   useEffect(() => {
     fetchNewHand();
   }, []);
 
+  // Função para rerollar a mão
   const rerollHand = async () => {
     if (rerollsLeft > 0) {
       const fetchedCards = await getCards();
@@ -76,36 +106,49 @@ export default function GameScreen({ navigation }) {
     }
   };
 
+  // Função que calcula a pontuação da mão atual
   const calculateScore = () => {
     let total = 0;
+
     cards.forEach(card => {
       let cardValue = 0;
 
+      // Valor do A
       if (card.rank === 'A') {
         cardValue = modifiers.bonusAce20 ? 20 : 10;
-      } else if (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J') {
+      }
+      // Valor de J/Q/K
+      else if (card.rank === 'K' || card.rank === 'Q' || card.rank === 'J') {
         cardValue = modifiers.faceCardsBoost ? 10 : 5;
-      } else if (['2', '3', '4', '5'].includes(card.rank)) {
+      }
+      // Valor de 2-5
+      else if (['2', '3', '4', '5'].includes(card.rank)) {
         cardValue = modifiers.bonusLowCards ? 10 : parseInt(card.rank);
-      } else {
+      }
+      // Valor numérico normal
+      else {
         cardValue = parseInt(card.rank);
       }
 
       total += cardValue;
 
+      // Bônus por ♠️
       if (modifiers.bonusSpades && card.suit === '♠️') {
         total += 20;
       }
 
+      // Bônus por cartas vermelhas
       if (modifiers.bonusRedCards && (card.suit === '♥️' || card.suit === '♦️')) {
         total += 5;
       }
     });
 
+    // Bônus fixo +10
     if (modifiers.bonusFlat10) {
       total += 10;
     }
 
+    // Multiplicador +50%
     if (modifiers.bonusMultiplier) {
       total = Math.floor(total * 1.5);
     }
@@ -114,8 +157,10 @@ export default function GameScreen({ navigation }) {
     return total;
   };
 
+  // Verifica se o jogador passou ou perdeu a rodada
   const checkRoundProgression = (calculatedScore) => {
     if (calculatedScore >= targetScore) {
+      // Passou de rodada
       Alert.alert(
         "Parabéns!",
         `Você passou para a próxima rodada!\n\nPontuação: ${calculatedScore} pts`,
@@ -132,6 +177,7 @@ export default function GameScreen({ navigation }) {
         ]
       );
     } else {
+      // Game Over
       navigation.navigate('GameOver', {
         round: currentRound,
         coins: coins,
@@ -139,21 +185,25 @@ export default function GameScreen({ navigation }) {
     }
   };
 
+  // Função chamada ao clicar em "Jogar Rodada"
   const playRound = () => {
     const calculatedScore = calculateScore();
     checkRoundProgression(calculatedScore);
   };
 
+  // Ativa o modificador da rodada
   const applyModifier = () => {
     if (currentModifier) {
       setModifiers(prev => ({ ...prev, [currentModifier.key]: true }));
 
+      // Se for bonusReroll, aumenta rerolls
       if (currentModifier.key === 'bonusReroll') {
         setRerollsLeft(prev => prev + 1);
       }
     }
   };
 
+  // Abre a tela da loja
   const openShop = () => {
     navigation.navigate('Shop', {
       coins,
@@ -163,6 +213,7 @@ export default function GameScreen({ navigation }) {
     });
   };
 
+  // Reseta o jogo inteiro
   const resetGame = () => {
     setCurrentRound(1);
     setTargetScore(50);
@@ -171,6 +222,7 @@ export default function GameScreen({ navigation }) {
     fetchNewHand();
   };
 
+  // Renderização da tela
   return (
     <ImageBackground
       source={require('../assets/poker_table_bg.png')}
@@ -192,10 +244,12 @@ export default function GameScreen({ navigation }) {
 
         <Score value={score} />
 
+        {/* Botão para jogar rodada */}
         <TouchableOpacity style={styles.button} onPress={playRound}>
           <Text style={styles.buttonText}>🎮 Jogar Rodada</Text>
         </TouchableOpacity>
 
+        {/* Botão para aplicar modificador */}
         {currentModifier && (
           <TouchableOpacity
             style={styles.button}
@@ -208,14 +262,17 @@ export default function GameScreen({ navigation }) {
           </TouchableOpacity>
         )}
 
+        {/* Botão para reroll */}
         <TouchableOpacity style={styles.button} onPress={rerollHand}>
           <Text style={styles.buttonText}>🔄 Nova Mão ({rerollsLeft} rerolls)</Text>
         </TouchableOpacity>
 
+        {/* Botão para abrir loja */}
         <TouchableOpacity style={styles.button} onPress={openShop}>
           <Text style={styles.buttonText}>🛒 Abrir Loja</Text>
         </TouchableOpacity>
 
+        {/* Lista de modificadores comprados */}
         <Text style={styles.subtitle}>✨ Modificadores Comprados:</Text>
         {ownedModifiers.length === 0 && <Text style={styles.text}>(Nenhum)</Text>}
         {ownedModifiers.map((mod, index) => (
@@ -237,10 +294,12 @@ export default function GameScreen({ navigation }) {
           </TouchableOpacity>
         ))}
 
+        {/* Botão para reiniciar jogo */}
         <TouchableOpacity style={styles.button} onPress={resetGame}>
           <Text style={styles.buttonText}>🔄 Reiniciar Jogo</Text>
         </TouchableOpacity>
 
+        {/* Botão para voltar ao menu */}
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>🏠 Voltar ao Início</Text>
         </TouchableOpacity>
@@ -248,69 +307,3 @@ export default function GameScreen({ navigation }) {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 10,
-    textAlign: 'center',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 8,
-  },
-  coins: {
-    fontSize: 20,
-    color: '#fff',
-    marginBottom: 15,
-  },
-  subtitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginVertical: 10,
-    textAlign: 'center',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 6,
-  },
-  cardList: {
-    marginBottom: 15,
-  },
-  button: {
-    backgroundColor: '#8B0000',
-    paddingVertical: 15,
-    paddingHorizontal: 50,
-    borderRadius: 15,
-    marginBottom: 15,
-    borderWidth: 3,
-    borderColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  text: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 10,
-  },
-});

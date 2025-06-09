@@ -1,7 +1,10 @@
 // src/screens/ShopScreen.js
+
+// Importa React e componentes básicos
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert, ImageBackground } from 'react-native';
 
+// Lista de modificadores disponíveis para compra
 const modifiersList = [
   { id: 1, name: "+50% pontos totais", key: 'bonusMultiplier' },
   { id: 2, name: "+20 por ♠️", key: 'bonusSpades' },
@@ -13,20 +16,28 @@ const modifiersList = [
   { id: 8, name: "+1 reroll extra", key: 'bonusReroll' },
 ];
 
+// Componente da Loja (ShopScreen)
 export default function ShopScreen({ navigation, route }) {
+  // Recebe os parâmetros enviados pela GameScreen
   const { coins, setCoins, ownedModifiers, setOwnedModifiers } = route.params;
 
+  // Função para comprar um modificador
   const buyModifier = (mod) => {
     if (coins >= 10) {
+      // Adiciona o modificador à lista de comprados
       setOwnedModifiers(prev => [...prev, mod]);
+      // Deduz o custo em moedas
       setCoins(prev => prev - 10);
 
+      // Alerta de sucesso
       Alert.alert("Comprou modificador!", `Você comprou: ${mod.name}`);
     } else {
+      // Alerta de moedas insuficientes
       Alert.alert("Moedas insuficientes", "Você precisa de pelo menos 10 moedas para comprar um modificador.");
     }
   };
 
+  // Renderiza um item (linha) da lista de modificadores
   const renderModifierItem = ({ item }) => (
     <View style={styles.modRow}>
       <Text style={styles.modName}>{item.name}</Text>
@@ -36,16 +47,21 @@ export default function ShopScreen({ navigation, route }) {
     </View>
   );
 
+  // Renderização da tela
   return (
+    // Fundo com imagem da mesa de poker
     <ImageBackground
       source={require('../assets/poker_table_bg.png')}
       style={styles.background}
       resizeMode="cover"
     >
       <View style={styles.container}>
+        {/* Título da loja */}
         <Text style={styles.title}>🛒 Loja de Modificadores</Text>
+        {/* Quantidade de moedas disponíveis */}
         <Text style={styles.coins}>🪙 Moedas: {coins}</Text>
 
+        {/* Lista de modificadores para compra */}
         <FlatList
           data={modifiersList}
           keyExtractor={item => item.id.toString()}
@@ -53,12 +69,14 @@ export default function ShopScreen({ navigation, route }) {
           contentContainerStyle={styles.list}
         />
 
+        {/* Lista de modificadores já comprados */}
         <Text style={styles.subtitle}>✨ Modificadores Comprados:</Text>
         {ownedModifiers.length === 0 && <Text style={styles.text}>(Nenhum)</Text>}
         {ownedModifiers.map((mod, index) => (
           <Text key={index} style={styles.text}>• {mod.name}</Text>
         ))}
 
+        {/* Botão para voltar para a GameScreen */}
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>🏠 Voltar ao Jogo</Text>
         </TouchableOpacity>
@@ -66,103 +84,3 @@ export default function ShopScreen({ navigation, route }) {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginBottom: 10,
-    textAlign: 'center',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 8,
-  },
-  coins: {
-    fontSize: 20,
-    color: '#fff',
-    marginBottom: 15,
-  },
-  list: {
-    paddingBottom: 20,
-  },
-  modRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 10,
-    borderWidth: 2,
-    borderColor: '#FFD700',
-    width: '100%',
-  },
-  modName: {
-    fontSize: 18,
-    color: '#fff',
-    flex: 1,
-  },
-  buyButton: {
-    backgroundColor: '#8B0000',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-  },
-  buyButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginVertical: 15,
-    textAlign: 'center',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 6,
-  },
-  text: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  button: {
-    backgroundColor: '#8B0000',
-    paddingVertical: 15,
-    paddingHorizontal: 50,
-    borderRadius: 15,
-    marginTop: 20,
-    borderWidth: 3,
-    borderColor: '#FFD700',
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
