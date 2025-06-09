@@ -1,6 +1,6 @@
 // src/screens/GameScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert, ImageBackground, ScrollView } from 'react-native';
 import Card from '../components/Card';
 import Score from '../components/Score';
 import { getCards } from '../services/api';
@@ -45,7 +45,6 @@ export default function GameScreen({ navigation }) {
     setScore(0);
 
     setModifiers(prev => ({
-      ...prev,
       bonusMultiplier: false,
       bonusSpades: false,
       faceCardsBoost: false,
@@ -133,7 +132,6 @@ export default function GameScreen({ navigation }) {
         ]
       );
     } else {
-      // Ir para Game Over
       navigation.navigate('GameOver', {
         round: currentRound,
         coins: coins,
@@ -174,76 +172,145 @@ export default function GameScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Rodada: {currentRound} | Alvo: {targetScore} pts</Text>
-      <Text style={styles.coins}>🪙 Moedas: {coins}</Text>
+    <ImageBackground
+      source={require('../assets/poker_table_bg.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>🎲 Rodada {currentRound} | 🎯 Alvo: {targetScore} pts</Text>
+        <Text style={styles.coins}>🪙 Moedas: {coins}</Text>
 
-      <Text style={styles.subtitle}>Sua Mão</Text>
-      <FlatList
-        data={cards}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        renderItem={({ item }) => <Card card={item} />}
-      />
-
-      <Score value={score} />
-
-      <Button title="Jogar Rodada" onPress={playRound} />
-
-      {currentModifier && (
-        <Button
-          title={modifiers[currentModifier.key] ? `${currentModifier.name} Ativado!` : `Aplicar: ${currentModifier.name}`}
-          onPress={applyModifier}
-          disabled={modifiers[currentModifier.key]}
+        <Text style={styles.subtitle}>🃏 Sua Mão</Text>
+        <FlatList
+          data={cards}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          contentContainerStyle={styles.cardList}
+          renderItem={({ item }) => <Card card={item} />}
         />
-      )}
 
-      <Button title={`Nova Mão (${rerollsLeft} rerolls)`} onPress={rerollHand} />
+        <Score value={score} />
 
-      <Button title="Abrir Loja" onPress={openShop} />
+        <TouchableOpacity style={styles.button} onPress={playRound}>
+          <Text style={styles.buttonText}>🎮 Jogar Rodada</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.subtitle}>Modificadores Comprados:</Text>
-      {ownedModifiers.length === 0 && <Text>(Nenhum)</Text>}
-      {ownedModifiers.map((mod, index) => (
-        <Button
-          key={index}
-          title={modifiers[mod.key] ? `${mod.name} Ativado!` : `Usar: ${mod.name}`}
-          onPress={() => {
-            setModifiers(prev => ({ ...prev, [mod.key]: true }));
+        {currentModifier && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={applyModifier}
+            disabled={modifiers[currentModifier.key]}
+          >
+            <Text style={styles.buttonText}>
+              {modifiers[currentModifier.key] ? `${currentModifier.name} Ativado!` : `Aplicar: ${currentModifier.name}`}
+            </Text>
+          </TouchableOpacity>
+        )}
 
-            if (mod.key === 'bonusReroll') {
-              setRerollsLeft(prev => prev + 1);
-            }
-          }}
-          disabled={modifiers[mod.key]}
-        />
-      ))}
+        <TouchableOpacity style={styles.button} onPress={rerollHand}>
+          <Text style={styles.buttonText}>🔄 Nova Mão ({rerollsLeft} rerolls)</Text>
+        </TouchableOpacity>
 
-      <Button title="🔄 Reiniciar Jogo" onPress={resetGame} />
-      <Button title="Voltar ao Início" onPress={() => navigation.goBack()} />
-    </View>
+        <TouchableOpacity style={styles.button} onPress={openShop}>
+          <Text style={styles.buttonText}>🛒 Abrir Loja</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.subtitle}>✨ Modificadores Comprados:</Text>
+        {ownedModifiers.length === 0 && <Text style={styles.text}>(Nenhum)</Text>}
+        {ownedModifiers.map((mod, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.button}
+            onPress={() => {
+              setModifiers(prev => ({ ...prev, [mod.key]: true }));
+
+              if (mod.key === 'bonusReroll') {
+                setRerollsLeft(prev => prev + 1);
+              }
+            }}
+            disabled={modifiers[mod.key]}
+          >
+            <Text style={styles.buttonText}>
+              {modifiers[mod.key] ? `${mod.name} Ativado!` : `Usar: ${mod.name}`}
+            </Text>
+          </TouchableOpacity>
+        ))}
+
+        <TouchableOpacity style={styles.button} onPress={resetGame}>
+          <Text style={styles.buttonText}>🔄 Reiniciar Jogo</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>🏠 Voltar ao Início</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flexGrow: 1,
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   title: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#FFD700',
+    marginBottom: 10,
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,
   },
   coins: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 15,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#FFD700',
     marginVertical: 10,
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 6,
+  },
+  cardList: {
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#8B0000',
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 15,
+    marginBottom: 15,
+    borderWidth: 3,
+    borderColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.9,
+    shadowRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 10,
   },
 });
