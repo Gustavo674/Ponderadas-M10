@@ -5,16 +5,21 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Card, Title, Paragraph, Button, Snackbar, IconButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { addNotification } from '../utils/notifications'; // IMPORTADO!
 
 export default function ProductDetailScreen({ route }) {
   const navigation = useNavigation();
-  const { product = { id: '0', name: 'Produto Padrão', price: '0', description: 'Sem descrição' } } = route.params || {};
+  const { product = { id: '0', name: 'Produto Padrão', price: '0', description: 'Sem descrição', image: '' } } = route.params || {};
   const [favorited, setFavorited] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   const handleFavorite = async () => {
     try {
       await AsyncStorage.setItem(`fav-${product.id}`, JSON.stringify(product));
+
+      // 👉 Adiciona notificação de "favoritado"
+      await addNotification(`Produto "${product.name}" foi favoritado!`);
+
       setFavorited(true);
       setSnackbarVisible(true);
     } catch (error) {
@@ -29,14 +34,14 @@ export default function ProductDetailScreen({ route }) {
         <IconButton
           icon="arrow-left"
           size={28}
-          onPress={() => navigation.goBack()} // CORRIGIDO aqui!
+          onPress={() => navigation.goBack()}
         />
       </View>
 
       {/* Card com detalhes do produto */}
       <Card style={styles.card}>
-        {/* Imagem placeholder */}
-        <Card.Cover source={{ uri: product.image }} />
+        {/* Imagem do produto */}
+        <Card.Cover source={{ uri: product.image ? `data:image/jpeg;base64,${product.image}` : 'https://via.placeholder.com/300x300.png?text=Sem+Imagem' }} />
 
         <Card.Content>
           <Title style={styles.title}>{product.name}</Title>
