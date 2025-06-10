@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "JQK valem 10",
+    "description": "Todos os Js, Qs e Ks passam a valer 10 pontos."
+  },
+  {
+    "id": 2,
+    "name": "Paus dobram valor",
+    "description": "Cartas de paus valem o dobro."
+  }
+]
