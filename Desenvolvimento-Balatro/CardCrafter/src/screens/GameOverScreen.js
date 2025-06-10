@@ -1,44 +1,39 @@
-// src/screens/GameOverScreen.js
-
-// Importa o React e os componentes básicos do React Native
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+} from 'react-native';
 
-// Componente da Tela de Fim de Jogo (Game Over)
-// Recebe "navigation" e "route" como props do React Navigation
 export default function GameOverScreen({ navigation, route }) {
-
-  // Desestrutura os parâmetros passados pela rota (vindos da GameScreen)
   const { round, coins } = route.params;
 
-  // Função para reiniciar o jogo (navega para a tela 'Game')
   const handleRestart = () => {
     navigation.navigate('Game');
   };
 
-  // Renderização da tela
   return (
-    // Fundo da tela com imagem de mesa de poker
     <ImageBackground
       source={require('../assets/poker_table_bg.png')}
       style={styles.background}
       resizeMode="cover"
     >
       <View style={styles.container}>
-        {/* Título da tela */}
         <Text style={styles.title}>💀 Game Over 💀</Text>
 
-        {/* Informações sobre o desempenho do jogador */}
         <Text style={styles.text}>Você chegou até a rodada {round}!</Text>
         <Text style={styles.text}>Moedas acumuladas: {coins} 🪙</Text>
 
-        {/* Botão para reiniciar o jogo */}
         <TouchableOpacity style={styles.button} onPress={handleRestart}>
           <Text style={styles.buttonText}>🔄 Jogar Novamente</Text>
         </TouchableOpacity>
 
-        {/* Botão para voltar para a tela inicial */}
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Home')}
+        >
           <Text style={styles.buttonText}>🏠 Voltar ao Início</Text>
         </TouchableOpacity>
       </View>
@@ -46,29 +41,28 @@ export default function GameOverScreen({ navigation, route }) {
   );
 }
 
-// Estilos da tela
 const styles = StyleSheet.create({
   background: {
-    flex: 1,               // Ocupa toda a tela
-    width: '100%',         // Largura total
-    height: '100%',        // Altura total
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   container: {
-    flex: 1,               // Ocupa todo o espaço interno
-    padding: 20,           // Espaçamento interno
-    justifyContent: 'center',  // Centraliza verticalmente
-    alignItems: 'center',      // Centraliza horizontalmente
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Fundo semi-transparente (efeito de escurecimento)
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   title: {
-    fontSize: 36,              // Tamanho da fonte
-    fontWeight: 'bold',        // Negrito
-    color: '#FFD700',          // Dourado
-    marginBottom: 20,          // Espaçamento abaixo
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 20,
     textAlign: 'center',
-    textShadowColor: '#000',   // Sombra do texto (preto)
-    textShadowOffset: { width: 2, height: 2 },  // Direção da sombra
-    textShadowRadius: 8,       // Suavização da sombra
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 8,
   },
   text: {
     fontSize: 20,
@@ -77,14 +71,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#8B0000',       // Vermelho escuro
+    backgroundColor: '#8B0000',
     paddingVertical: 15,
     paddingHorizontal: 50,
-    borderRadius: 15,                 // Cantos arredondados
+    borderRadius: 15,
     marginTop: 20,
     borderWidth: 3,
-    borderColor: '#FFD700',           // Borda dourada
-    shadowColor: '#FFD700',           // Sombra dourada
+    borderColor: '#FFD700',
+    shadowColor: '#FFD700',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.9,
     shadowRadius: 8,
