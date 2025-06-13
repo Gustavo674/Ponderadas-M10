@@ -37,8 +37,7 @@ export default function LoginScreen() {
       return;
     }
 
-    // Aqui você poderia colocar uma autenticação real (ex: checar no backend)
-    // Neste caso, apenas navega para a tela principal
+    // Navega para a tela principal
     navigation.navigate('MainTabs');
   };
 
