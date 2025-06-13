@@ -1,5 +1,3 @@
-// src/screens/GameScreen.js
-
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -142,10 +140,32 @@ export default function GameScreen({ navigation }) {
         ]
       );
     } else {
-      navigation.navigate('GameOver', {
-        round: currentRound,
-        coins: coins,
-      });
+      
+      fetch('http://10.128.0.215:3001/games/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          round: currentRound,
+          score: calculatedScore,
+          coins: coins,
+          modifiers: modifiers,
+        }),
+      })
+        .then(() => {
+          navigation.navigate('GameOver', {
+            round: currentRound,
+            coins: coins,
+          });
+        })
+        .catch((error) => {
+          console.error('Erro ao salvar partida:', error);
+          navigation.navigate('GameOver', {
+            round: currentRound,
+            coins: coins,
+          });
+        });
     }
   };
 
@@ -157,7 +177,6 @@ export default function GameScreen({ navigation }) {
   const applyModifier = () => {
     if (currentModifier) {
       setModifiers(prev => ({ ...prev, [currentModifier.key]: true }));
-
       if (currentModifier.key === 'bonusReroll') {
         setRerollsLeft(prev => prev + 1);
       }

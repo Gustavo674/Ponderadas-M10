@@ -41,6 +41,13 @@ export default function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonText}>📜 Tutorial</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('History')}
+        >
+          <Text style={styles.buttonText}>📜 Ver Histórico</Text>
+        </TouchableOpacity>
       </Animated.View>
     </ImageBackground>
   );

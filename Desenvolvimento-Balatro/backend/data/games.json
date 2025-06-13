@@ -1,0 +1,155 @@
+[
+  {
+    "id": 1749817772946,
+    "round": 1,
+    "score": 26,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": false,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:29:32.946Z"
+  },
+  {
+    "id": 1749817776139,
+    "round": 1,
+    "score": 42,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": true,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:29:36.139Z"
+  },
+  {
+    "id": 1749817778744,
+    "round": 1,
+    "score": 33,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": false,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:29:38.744Z"
+  },
+  {
+    "id": 1749817968797,
+    "round": 1,
+    "score": 22,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": false,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:32:48.797Z"
+  },
+  {
+    "id": 1749817992866,
+    "round": 1,
+    "score": 30,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": false,
+      "bonusReroll": true
+    },
+    "timestamp": "2025-06-13T12:33:12.866Z"
+  },
+  {
+    "id": 1749818001798,
+    "round": 1,
+    "score": 39,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": false,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:33:21.798Z"
+  },
+  {
+    "id": 1749818021679,
+    "round": 1,
+    "score": 45,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": true,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:33:41.679Z"
+  },
+  {
+    "id": 1749818059441,
+    "round": 1,
+    "score": 46,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": true,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": false,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:34:19.441Z"
+  },
+  {
+    "id": 1749818077485,
+    "round": 1,
+    "score": 41,
+    "coins": 0,
+    "modifiers": {
+      "bonusMultiplier": false,
+      "bonusSpades": false,
+      "faceCardsBoost": false,
+      "bonusFlat10": false,
+      "bonusRedCards": false,
+      "bonusLowCards": false,
+      "bonusAce20": true,
+      "bonusReroll": false
+    },
+    "timestamp": "2025-06-13T12:34:37.485Z"
+  }
+]
